@@ -1,4 +1,4 @@
-module github.com/maxim-panchuk/http-swagger.git
+module github.com/maxim-panchuk/http-swagger
 
 go 1.21.6
 
