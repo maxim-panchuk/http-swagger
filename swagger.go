@@ -1,6 +1,8 @@
 package httpSwagger
 
 import (
+	"encoding/json"
+	"fmt"
 	"html/template"
 	"net/http"
 	"net/url"
@@ -206,11 +208,24 @@ func Handler(configFns ...func(*Config)) http.HandlerFunc {
 			doc, err := swag.ReadDoc(config.InstanceName)
 			if err != nil {
 				http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-
 				return
 			}
 
-			_, _ = w.Write([]byte(doc))
+			var data map[string]interface{}
+			if err := json.Unmarshal([]byte(doc), &data); err != nil {
+				fmt.Println("error unmarshalling doc.json")
+				http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+				return
+			}
+
+			host := r.Host
+			data["host"] = host
+			raw, err := json.Marshal(data)
+			if err != nil {
+				fmt.Println("error marshalling doc.json")
+				http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+			}
+			_, _ = w.Write(raw)
 		case "":
 			http.Redirect(w, r, matches[1]+"/"+"index.html", http.StatusMovedPermanently)
 		default:

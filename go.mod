@@ -1,6 +1,6 @@
-module github.com/swaggo/http-swagger/v2
+module github.com/maxim-panchuk/swaggo/http-swagger.git
 
-go 1.17
+go 1.21.6
 
 require (
 	github.com/stretchr/testify v1.7.0
